@@ -1,0 +1,359 @@
+:root{
+  --bg:#12151C;
+  --surface:#1A1F29;
+  --border:#2B3140;
+  --text:#E7E9EE;
+  --muted:#8B93A7;
+  --amber:#2965F1;
+  --teal:#E34F26;
+  --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  --sans: -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--bg); color:var(--text); font-family:var(--sans); line-height:1.55; -webkit-font-smoothing:antialiased;}
+
+/* ---------- Layout shell ---------- */
+.app-shell{display:grid; grid-template-columns:280px 1fr; min-height:100vh;}
+/* ANG TUNAY NA FIX: ang mga direktang anak ng .app-shell ay yung mga
+   walang-classes na wrapper div (data-slot="sidebar"/"main") mula sa
+   AppLayout.js — SILA yung totoong "grid items", hindi ang .sidebar/
+   .main-content sa loob nila. Kaya dito dapat ilagay ang min-width:0,
+   kung hindi, pipilitin ng mahabang code/table content ang buong grid
+   track na lumapad lampas sa screen (overflow sa mobile). */
+.app-shell > *{min-width:0;}
+@media (max-width:900px){
+  .app-shell{grid-template-columns:1fr;}
+  .sidebar{position:relative; height:auto; border-right:none; border-bottom:1px solid var(--border);}
+}
+.sidebar{
+  position:sticky; top:0; height:100vh; overflow-y:auto; min-width:0;
+  border-right:1px solid var(--border);
+  padding:28px 20px 60px;
+  background:linear-gradient(180deg, var(--surface), var(--bg) 60%);
+}
+.main-content{padding:56px 48px 120px; max-width:820px; min-width:0;}
+@media (max-width:700px){.main-content{padding:32px 20px 100px;}}
+
+/* ---------- Sidebar components ---------- */
+.brand{font-family:var(--mono); font-size:13px; letter-spacing:.04em; color:var(--amber); margin-bottom:2px;}
+.brand-sub{font-size:22px; font-weight:700; margin:2px 0 20px; color:var(--text);}
+.search-wrap{margin-bottom:18px;}
+.search-input{
+  width:100%; padding:10px 12px; background:var(--surface); border:1px solid var(--border);
+  border-radius:8px; color:var(--text); font-family:var(--sans); font-size:13.5px; outline:none;
+}
+.search-input:focus{border-color:var(--amber);}
+.search-input::placeholder{color:var(--muted);}
+.nav-link{
+  display:flex; gap:10px; align-items:baseline; padding:7px 8px; border-radius:6px;
+  color:var(--muted); text-decoration:none; font-size:13.5px; cursor:pointer; transition:background .12s, color .12s;
+}
+.nav-link:hover{background:var(--surface); color:var(--text);}
+.nav-link.active{background:#2965F118; color:var(--amber);}
+.nav-link.hidden{display:none;}
+.nav-link .num{font-family:var(--mono); font-size:11px; color:var(--muted); min-width:22px;}
+.nav-link.active .num{color:var(--amber);}
+.no-results{color:var(--muted); font-size:13px; padding:10px 8px; display:none;}
+.phase-label{
+  font-family:var(--mono); font-size:11px; color:var(--amber); text-transform:uppercase;
+  letter-spacing:.08em; margin:22px 0 8px; padding:0 8px;
+  display:flex; align-items:center; gap:8px;
+}
+.phase-label::after{content:''; flex:1; height:1px; background:var(--border);}
+.phase-label:first-child{margin-top:0;}
+
+/* ---------- Hero component ---------- */
+.hero{margin-bottom:56px; padding-bottom:32px; border-bottom:1px solid var(--border);}
+.hero h1{font-size:38px; margin:0 0 10px; letter-spacing:-.01em; overflow-wrap:break-word;}
+.hero p{color:var(--muted); font-size:16px; max-width:60ch; margin:0;}
+.legend{margin-top:22px; display:flex; flex-wrap:wrap; gap:10px;}
+.legend span{font-family:var(--mono); font-size:11.5px; padding:5px 10px; border-radius:20px; border:1px solid var(--border); color:var(--muted);}
+
+/* ---------- TopicCard component ---------- */
+.topic{margin-bottom:64px; scroll-margin-top:24px;}
+.topic-head{display:flex; align-items:baseline; gap:12px; margin-bottom:6px;}
+.topic-num{font-family:var(--mono); color:var(--amber); font-size:15px;}
+.topic h2{font-size:24px; margin:0; overflow-wrap:break-word; min-width:0;}
+.topic-divider{height:1px; background:var(--border); margin:18px 0 22px;}
+
+.field{margin-bottom:16px; padding-left:16px; border-left:2px solid var(--border);}
+.field.why{border-left-color:var(--amber);}
+.field-label{font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.07em; color:var(--teal); margin-bottom:4px;}
+.field.why .field-label{color:var(--amber);}
+.field-body{font-size:15px; color:var(--text);}
+.field-body b{color:var(--amber); font-weight:600;}
+.field-body code{font-family:var(--mono); background:var(--surface); padding:1px 6px; border-radius:4px; font-size:13.5px; color:var(--teal); border:1px solid var(--border); overflow-wrap:break-word;}
+
+/* Scroll container para sa tables — kapag mas malapad ang table kaysa
+   sa screen (hal. maraming column sa maliit na phone), mag-scroll na
+   lang ito nang pahalang sa halip na sirain ang buong page layout. */
+.table-scroll{width:100%; overflow-x:auto; margin:14px 0 18px; -webkit-overflow-scrolling:touch;}
+table{width:100%; min-width:420px; border-collapse:collapse; font-size:14px;}
+th,td{text-align:left; padding:8px 12px; border-bottom:1px solid var(--border);}
+th{color:var(--muted); font-weight:600; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em;}
+td code{font-family:var(--mono); background:var(--surface); padding:1px 5px; border-radius:4px; font-size:13px; color:var(--teal); overflow-wrap:break-word;}
+
+pre{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px; overflow-x:auto; margin:14px 0 6px;}
+pre code{font-family:var(--mono); font-size:13.5px; line-height:1.6; color:#DDE3F0; white-space:pre;}
+.cm{color:#6A9955;} .kw{color:#569CD6;} .str{color:#CE9178;} .fn{color:#4EC9B0;} .num{color:#B5CEA8;}
+
+.copy-btn{
+  display:inline-flex; align-items:center; gap:6px; margin-top:8px; background:transparent;
+  border:1px solid var(--border); color:var(--muted); font-family:var(--mono); font-size:11.5px;
+  padding:5px 10px; border-radius:6px; cursor:pointer;
+}
+.copy-btn:hover{border-color:var(--amber); color:var(--amber);}
+
+/* ---------- QuickMap component ---------- */
+.quickmap{background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:24px 26px; margin-top:20px;}
+.quickmap h3{margin-top:0; font-size:16px; color:var(--amber);}
+.quickmap ul{margin:0; padding-left:20px;}
+.quickmap li{margin-bottom:8px; font-size:14.5px;}
+
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border); border-radius:8px;}
+
+/* ---------- LiveDemo component ---------- */
+.demo-heading{
+  font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--amber); margin:20px 0 10px;
+}
+.demo{
+  display:grid; grid-template-columns:220px 1fr; gap:20px;
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:20px; margin-bottom:6px;
+}
+@media (max-width:640px){ .demo{grid-template-columns:1fr;} }
+
+.demo-controls{display:flex; flex-direction:column; gap:14px; min-width:0;}
+.demo-control{display:flex; flex-direction:column; gap:6px; font-size:12.5px; color:var(--muted);}
+.demo-control-label{display:flex; justify-content:space-between; gap:6px;}
+.demo-control-value{font-family:var(--mono); color:var(--amber); font-size:11.5px;}
+
+.demo-control input[type="range"]{
+  -webkit-appearance:none; width:100%; height:4px; border-radius:4px;
+  background:var(--border); outline:none;
+}
+.demo-control input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:14px; height:14px; border-radius:50%;
+  background:var(--amber); cursor:pointer; border:2px solid var(--bg);
+}
+.demo-control input[type="range"]::-moz-range-thumb{
+  width:14px; height:14px; border-radius:50%; background:var(--amber);
+  cursor:pointer; border:2px solid var(--bg);
+}
+.demo-control select{
+  background:var(--bg); color:var(--text); border:1px solid var(--border);
+  border-radius:6px; padding:6px 8px; font-family:var(--sans); font-size:12.5px; outline:none;
+}
+.demo-control select:focus{border-color:var(--amber);}
+.demo-control input[type="color"]{
+  width:100%; height:32px; border:1px solid var(--border); border-radius:6px;
+  background:var(--bg); cursor:pointer; padding:2px;
+}
+
+.demo-preview-wrap{
+  display:flex; align-items:center; justify-content:center;
+  position:relative; /* kailangan ito para may "anchor" ang position:absolute ng demo-box */
+  background:
+    linear-gradient(45deg, #262b36 25%, transparent 25%),
+    linear-gradient(-45deg, #262b36 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #262b36 75%),
+    linear-gradient(-45deg, transparent 75%, #262b36 75%);
+  background-size:16px 16px;
+  background-position:0 0, 0 8px, 8px -8px, -8px 0px;
+  background-color:#1e222c;
+  border-radius:8px; min-height:220px; overflow:hidden; padding:16px;
+}
+.demo-box{
+  background-color:#2965F1; color:#fff; display:flex; align-items:center; justify-content:center;
+  min-width:60px; min-height:60px; font-family:var(--mono); font-size:13px;
+  position:relative; box-sizing:border-box; text-align:center;
+}
+.demo-box--hoverable{cursor:pointer;}
+.demo-box--draggable{cursor:grab; user-select:none; touch-action:none;}
+.demo-box--draggable:active{cursor:grabbing;}
+.demo-child{
+  background:#E34F26; color:#fff; display:flex; align-items:center; justify-content:center;
+  width:44px; height:44px; font-family:var(--mono); font-size:12px; border-radius:4px; flex-shrink:0;
+}
+.demo-child-2{background:#38BDF8;}
+.demo-child-3{background:#22C55E;}
+.demo-child-4{background:#EAB308;}
+.demo-child-5{background:#A855F7;}
+.demo-child-6{background:#F472B6;}
+
+/* ---------- Diagram (inline SVG wireframes) ---------- */
+.diagram-heading{
+  font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--amber); margin:20px 0 10px;
+}
+.diagram-wrap{
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:16px; margin-bottom:6px;
+}
+.diagram-wrap svg{width:100%; height:auto; display:block;}
+
+/* ---------- Showcase (live, real HTML elements) ---------- */
+.showcase-heading{
+  font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.07em;
+  color:var(--amber); margin:20px 0 10px;
+}
+.showcase-box{
+  background:var(--surface); border:1px solid var(--border); border-radius:12px;
+  padding:20px; margin-bottom:6px;
+}
+.showcase-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:14px;
+}
+.showcase-item{
+  display:flex; flex-direction:column; gap:6px; font-size:11.5px; color:var(--muted);
+  font-family:var(--mono); min-width:0;
+}
+.showcase-item-row{flex-direction:row; align-items:center; gap:8px;}
+.showcase-item input{
+  background:var(--bg); border:1px solid var(--border); border-radius:6px;
+  padding:7px 9px; color:var(--text); font-family:var(--sans); font-size:13px; outline:none;
+  accent-color:var(--amber); min-width:0; width:100%;
+}
+.showcase-item input:focus{border-color:var(--amber);}
+.showcase-item input[type="checkbox"], .showcase-item input[type="radio"]{width:16px; height:16px; padding:0;}
+.showcase-item input[type="color"]{padding:2px; height:34px;}
+.showcase-item input[type="submit"]{
+  background:var(--amber); color:#fff; border:none; cursor:pointer; font-weight:600;
+}
+
+.showcase-compare{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+.showcase-compare > *{min-width:0;}
+@media (max-width:600px){.showcase-compare{grid-template-columns:1fr;}}
+.showcase-bad, .showcase-good{
+  border-radius:10px; padding:16px; display:flex; flex-direction:column; gap:10px;
+}
+.showcase-bad{background:#3a1f1f; border:1px solid #5c2c2c;}
+.showcase-good{background:#1f3a2a; border:1px solid #2c5c3c;}
+.showcase-compare-label{
+  font-family:var(--mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; font-weight:700;
+}
+.showcase-bad .showcase-compare-label{color:#F87171;}
+.showcase-good .showcase-compare-label{color:#4ADE80;}
+.showcase-fake-img{
+  background:var(--bg); border:1px dashed var(--border); border-radius:6px; padding:14px;
+  text-align:center; font-family:var(--mono); font-size:12px; color:var(--muted);
+}
+.showcase-fake-input, .showcase-real-label{
+  font-size:13px; color:var(--text); display:flex; align-items:center; gap:8px;
+}
+.showcase-plain-input{
+  display:inline-block; width:100px; height:20px; border-bottom:1px solid var(--muted);
+}
+.showcase-real-label{min-width:0;}
+.showcase-real-label input{
+  background:var(--bg); border:1px solid var(--border); border-radius:6px;
+  padding:5px 8px; color:var(--text); font-size:13px; outline:none;
+  min-width:0; flex:1;
+}
+.showcase-fake-button{
+  background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:8px 14px;
+  text-align:center; font-size:13px; color:var(--muted); cursor:not-allowed;
+}
+.showcase-real-button{
+  background:var(--amber); color:#fff; border:none; border-radius:6px; padding:8px 14px;
+  font-size:13px; font-weight:600; cursor:pointer; font-family:var(--sans);
+}
+
+/* ---------- Back-to-hub link (idinagdag) ---------- */
+.hub-back-link{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--mono); font-size:11.5px; color:var(--muted);
+  text-decoration:none; margin-bottom:16px; padding:4px 0;
+}
+.hub-back-link:hover{color:var(--amber);}
+
+/* =========================================================
+   SIDEBAR TOGGLE SYSTEM (open/close)
+   - Desktop (>=901px): nagre-reflow lang ang column, bumabawi ng
+     espasyo ang main-content kapag naka-close.
+   - Mobile (<=900px): nagiging slide-in drawer na may dimmed
+     backdrop sa likod.
+   Ang mga classes (.sidebar-open/.sidebar-closed) ay nasa
+   .app-shell mismo, kinokontrol ng AppLayout.js.
+   ========================================================= */
+
+.app-shell{position:relative;}
+
+/* Ang laging-nakikitang pabukas/pasarang button (nasa itaas-kaliwa) */
+.sidebar-toggle{
+  position:fixed; top:16px; left:16px; z-index:50;
+  width:38px; height:38px; border-radius:10px;
+  background:var(--surface); border:1px solid var(--border);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; padding:0;
+  transition:opacity .2s ease, border-color .2s ease, background .2s ease, transform .15s ease;
+}
+.sidebar-toggle:hover{border-color:var(--amber); background:var(--bg);}
+.sidebar-toggle:active{transform:scale(.94);}
+.sidebar-toggle:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+
+/* Hamburger icon — 3 guhit gamit ang ::before/::after */
+.sidebar-toggle-icon{
+  position:relative; display:block; width:16px; height:2px;
+  background:var(--text); border-radius:2px;
+}
+.sidebar-toggle-icon::before,
+.sidebar-toggle-icon::after{
+  content:''; position:absolute; left:0; width:16px; height:2px;
+  background:var(--text); border-radius:2px;
+}
+.sidebar-toggle-icon::before{top:-5px;}
+.sidebar-toggle-icon::after{top:5px;}
+
+/* Yung close button (X) sa loob mismo ng sidebar (maliit na bersyon) */
+.sidebar-toggle--close{
+  position:static; width:28px; height:28px; flex-shrink:0;
+}
+.sidebar-toggle-icon--x{background:transparent;}
+.sidebar-toggle-icon--x::before,
+.sidebar-toggle-icon--x::after{top:0; transform-origin:center;}
+.sidebar-toggle-icon--x::before{transform:rotate(45deg);}
+.sidebar-toggle-icon--x::after{transform:rotate(-45deg);}
+
+.sidebar-head{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-bottom:2px;
+}
+
+/* Dimmed na backdrop — mobile drawer lang gumagamit nito */
+.sidebar-backdrop{
+  position:fixed; inset:0; background:rgba(4,6,10,.6);
+  opacity:0; pointer-events:none; z-index:32;
+  transition:opacity .25s ease;
+}
+
+/* ---------- DESKTOP: reflow ng column ---------- */
+/* Itago ang floating open-button kapag bukas na ang sidebar (may sarili
+   naman itong X close button sa loob) — desktop man o mobile drawer. */
+.app-shell.sidebar-open [data-role="sidebar-open-btn"]{opacity:0; pointer-events:none;}
+
+@media (min-width:901px){
+  .app-shell{transition:grid-template-columns .25s ease;}
+  .app-shell.sidebar-closed{grid-template-columns:0px 1fr;}
+  .app-shell.sidebar-closed .sidebar{
+    opacity:0; pointer-events:none; padding-left:0; padding-right:0; border-right:none;
+  }
+  .sidebar{transition:opacity .18s ease, padding .25s ease;}
+}
+
+/* ---------- MOBILE: slide-in drawer ---------- */
+@media (max-width:900px){
+  .sidebar{
+    position:fixed; top:0; left:0; height:100vh; width:82vw; max-width:320px;
+    z-index:35; transform:translateX(-100%);
+    transition:transform .28s ease;
+    box-shadow:24px 0 48px -24px rgba(0,0,0,.6);
+  }
+  .app-shell.sidebar-open .sidebar{transform:translateX(0);}
+  .app-shell.sidebar-open .sidebar-backdrop{opacity:1; pointer-events:auto;}
+  .main-content{padding-top:74px;}
+}

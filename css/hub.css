@@ -1,0 +1,193 @@
+/* =========================================================
+   CHEAT NOTES — HUB PAGE (css/hub.css)
+   Parehong dark theme sa mga sub-project (--bg #12151C etc.)
+   para consistent ang itsura pagpasok sa bawat isa.
+   ========================================================= */
+
+:root{
+  --bg:#0F1218;
+  --surface:#171B24;
+  --surface-2:#1D2230;
+  --border:#2B3140;
+  --text:#E7E9EE;
+  --muted:#8B93A7;
+  --mono: "SF Mono", "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  --sans: -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--text); font-family:var(--sans);
+  line-height:1.55; -webkit-font-smoothing:antialiased;
+  min-height:100vh; position:relative; overflow-x:hidden;
+}
+
+/* Subtle na dot-grid sa background — texture lang, hindi distracting */
+.bg-grid{
+  position:fixed; inset:0; z-index:-1;
+  background-image:radial-gradient(var(--border) 1px, transparent 1px);
+  background-size:26px 26px;
+  mask-image:radial-gradient(ellipse 70% 55% at 50% 10%, #000 40%, transparent 90%);
+  opacity:.55;
+}
+
+.hub{
+  width:100%;
+  max-width:1040px;
+  margin:0 auto;
+  padding:80px 24px 60px;
+  display:flex; flex-direction:column; min-height:100vh;
+}
+
+/* ---------- Header ---------- */
+.hub-header{margin-bottom:52px; max-width:680px;}
+.hub-eyebrow{
+  font-family:var(--mono); font-size:13px; letter-spacing:.06em;
+  color:var(--muted); margin-bottom:14px;
+}
+.hub-header h1{
+  font-size:clamp(30px, 5vw, 44px); margin:0 0 14px; letter-spacing:-.01em; font-weight:800;
+}
+.hub-title-accent{
+  background:linear-gradient(90deg, #E34F26, #2965F1 40%, #38BDF8 70%, #3178C6);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.hub-header p{color:var(--muted); font-size:15.5px; margin:0 0 20px; max-width:56ch;}
+
+.hub-tags{display:flex; flex-wrap:wrap; gap:10px;}
+.hub-tags span{
+  font-family:var(--mono); font-size:11.5px; padding:5px 12px; border-radius:20px;
+  border:1px solid var(--border); color:var(--muted); background:var(--surface);
+}
+
+/* ---------- Grid ng tech buttons ---------- */
+/* auto-fit + minmax = automatic ang pagka-responsive: */
+/* malapad na screen = 4 columns, papaliit = 2, mobile = 1 column. */
+.tech-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+  gap:20px;
+  flex:1;
+}
+
+.tech-card{
+  position:relative;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+  padding:34px 22px 26px;
+  border-radius:18px;
+  border:1px solid var(--border);
+  background:linear-gradient(180deg, var(--surface), var(--surface-2));
+  text-decoration:none;
+  color:var(--muted);
+  overflow:hidden;
+  isolation:isolate;
+  opacity:0; transform:translateY(14px);
+  animation:cardIn .5s ease forwards;
+  transition:transform .25s ease, border-color .25s ease, box-shadow .3s ease;
+}
+.tech-card:nth-child(1){animation-delay:.05s;}
+.tech-card:nth-child(2){animation-delay:.12s;}
+.tech-card:nth-child(3){animation-delay:.19s;}
+.tech-card:nth-child(4){animation-delay:.26s;}
+@keyframes cardIn{ to{ opacity:1; transform:translateY(0); } }
+
+.tech-index{
+  position:absolute; top:14px; right:16px;
+  font-family:var(--mono); font-size:11px; color:var(--border);
+  letter-spacing:.05em;
+}
+
+/* Malambot na radial glow na nakatago (opacity:0) hanggang mag-hover */
+.tech-glow{
+  position:absolute; inset:-30%;
+  background:radial-gradient(circle at 50% 15%, var(--tech-1), transparent 65%);
+  opacity:0;
+  transition:opacity .35s ease;
+  z-index:-1;
+  pointer-events:none;
+}
+
+/* ITO YUNG "PLAIN / WALANG KULAY" NA DEFAULT STATE --------------- */
+/* Puting plato ang lagyan ng logo — para pantay ang itsura kahit magkaiba */
+/* ang background ng bawat na-upload na logo image (transparent, puti, dark). */
+.tech-plate{
+  width:100%;
+  aspect-ratio:16/10;
+  max-width:190px;
+  background:#FFFFFF;
+  border-radius:14px;
+  display:flex; align-items:center; justify-content:center;
+  padding:16px;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.04);
+  transition:box-shadow .35s ease, transform .35s ease;
+}
+/* Yung Tailwind logo mismo may dark background na — gawin siyang transparent */
+/* na frame sa halip na puti, para hindi mag-clash. */
+.tech-plate--dark{background:#0F172A;}
+
+.tech-plate img{
+  max-width:100%; max-height:100%; object-fit:contain; display:block;
+  filter:grayscale(1) opacity(.5);
+  transition:filter .4s ease;
+}
+
+.tech-name{font-weight:700; font-size:17px; color:var(--text);}
+.tech-desc{font-size:12.5px; color:var(--muted); text-align:center; min-height:2.4em;}
+
+.tech-cta{
+  margin-top:4px;
+  font-family:var(--mono); font-size:11px; color:var(--border);
+  display:inline-flex; align-items:center; gap:6px;
+  transition:color .3s ease, gap .3s ease;
+}
+.tech-cta .arrow{transition:transform .3s ease;}
+
+/* ITO YUNG "IILAW DEPENDE SA KULAY NG TECHNOLOGY" PAG NA-HOVER --- */
+.tech-card:hover,
+.tech-card:focus-visible{
+  transform:translateY(-6px);
+  border-color:var(--tech-1);
+  box-shadow:0 20px 44px -20px var(--tech-1);
+  outline:none;
+}
+.tech-card:hover .tech-glow,
+.tech-card:focus-visible .tech-glow{
+  opacity:.30;
+}
+.tech-card:hover .tech-plate,
+.tech-card:focus-visible .tech-plate{
+  box-shadow:0 0 0 2px var(--tech-1), 0 0 26px -4px var(--tech-1);
+  transform:scale(1.03);
+}
+.tech-card:hover .tech-plate img,
+.tech-card:focus-visible .tech-plate img{
+  filter:grayscale(0) opacity(1);
+}
+.tech-card:hover .tech-cta,
+.tech-card:focus-visible .tech-cta{
+  color:var(--tech-1);
+}
+.tech-card:hover .tech-cta .arrow,
+.tech-card:focus-visible .tech-cta .arrow{
+  transform:translateX(3px);
+}
+
+/* ---------- Footer ---------- */
+.hub-footer{
+  margin-top:52px; padding-top:22px; border-top:1px solid var(--border);
+  font-family:var(--mono); font-size:11.5px; color:var(--muted); text-align:center;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width:640px){
+  .hub{padding:52px 18px 40px;}
+  .hub-header{margin-bottom:36px;}
+  .tech-grid{grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:14px;}
+  .tech-card{padding:24px 14px 20px;}
+  .tech-plate{max-width:140px;}
+}
+
+@media (prefers-reduced-motion: reduce){
+  .tech-card{animation:none; opacity:1; transform:none;}
+}
